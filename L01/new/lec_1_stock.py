@@ -20,7 +20,42 @@ Exercise: modify these routines to output i0 and j0 as well.
 
 import random
 import time
+import cProfile
 
+#self
+'''
+#傻瓜式解法,O(n^2) 2次遍历, like bulble sort
+def naive(A):
+    result = 0
+    idx = [None,None]
+    for i in range(A.length):
+        for j in range(i:A.length):
+            if A[j] - A[i] > result:
+                result = A[j] - A[i]
+                idx = [i,j]
+    return {'result':result,'idx':idx }
+# div & conq. O(nlgn). 分成左右2半如果sell和buy都在左边或者右边再细分,如果sell和buy分别在右边和左边可以取右边最大
+# 值减左边最大值能得到最大利润
+
+def div_conquer(A):
+    len_A = len(A)
+    l_res = None
+    r_res = None
+    m_res = None
+    res = None
+    if len_A/2 > 0:
+        left = [0,len_A/2]
+        right = [len_A/2 + 1 , len_A-1]
+        l_res = div_conquer(left)
+        r_res = div_conquer(right)
+        m_res = max(right) - min(left)
+        return max(l_res,r_res,m_res)
+    else:
+        return A[1] - A[0]
+   
+'''
+
+#产生0到1的随机数,个数是n
 def make_prices(n, seed):
     """ Return array of n random prices, based on seed. """
     random.seed(seed)              # set random # generator seed
@@ -30,11 +65,11 @@ def naive(A):
     """ return best gain on A, using naive method 
         running time, due to doubly-nest loop, is Theta(n^2)
     """
-    n = len(A)
+    n = len(A)#缓存length不用每次计算len(A)
     ans = 0
     for i0 in range(n):
-        for j0 in range(i0,n):
-            ans = max(ans, A[j0]-A[i0])
+        for j0 in range(i0,n):#范围这里用range(i0,n)，包括i0不包括n
+            ans = max(ans, A[j0]-A[i0])#调用max
             if ans == A[j0]-A[i0]:
                 indexBuy = i0
                 indexSell = j0
@@ -43,14 +78,18 @@ def naive(A):
                 indexSell = indexSell
     return (ans,indexBuy,indexSell)
 
-def dc(A, lo, hi):
+def dc(A, lo=None, hi=None):
     """ return best gain on A[lo:hi], using divide & conquer 
         running time is solution to T(n) = 2*T(n/2) + Theta(n) = Theta(n log n)
     """
+    if lo is None:
+        lo = 0
+    if hi is None:
+        hi = len(A)
     n = hi-lo
     # base case
     if n == 1:
-        return 0#base条件in this case if our array is of size 1, then the maximum profit we can make is 0
+        return 0
     # divide and conquer
     # divide into lo:mid and mid:hi
     mid = (lo+hi)//2            
@@ -58,7 +97,7 @@ def dc(A, lo, hi):
     gain_low = dc(A, lo, mid)
     # recurse on right half
     gain_high = dc(A, mid, hi)
-    # figure out best gain for buying in left half, selling in right half.cross mid情况
+    # figure out best gain for buying in left half, selling in right half
     buy_price = min([ A[i] for i in range(lo, mid) ])
     sell_price = max([ A[i] for i in range(mid, hi)])
     gain_cross = sell_price - buy_price
@@ -76,7 +115,7 @@ def lin(A):
     PMins = [0] * n
     PMins[0] = A[0]
     for i in range(1, n):
-        PMins[i] = min(A[i], PMins[i-1])#reuse computation
+        PMins[i] = min(A[i], PMins[i-1])#reuse computation 存起来不用计算
     # max_gain will equal the optimum gain max_{i} max_{j>=i} A[j]-A[i]
     max_gain = 0
     for j in range(1, n):
@@ -93,7 +132,7 @@ def lin1(A):
     #      = price to buy at if you have to buy no later than k (and sell no earlier than k)
     B = [A[0]] * n
     for k in range(1, n):
-        B[k] = min(B[k-1],A[k]) #reuse computation
+        B[k] = min(B[k-1],A[k]) #reuse computation 复用计算把min都存下来
     # S[k] = max{ A[j0]: j0 >= k }   for k = 0, 1, ..., n-1
     #      = price to sell at if you have to sell no earlier than k (but bought no later than k)
     S = [A[n-1]] * n
@@ -123,10 +162,10 @@ def test():
     gain_lin = lin(A)
     t3 = time.time()
 
-    print ("naive: ", gain_naive, "time: ", t1-t0, " seconds.")
-    print ("dc:    ", gain_dc,    "time: ", t2-t1, " seconds.")
-    print ("lin:   ", gain_lin,   "time: ", t3-t2, " seconds.")
-    print ("i0:",i0,"j0:",j0)
+    print "naive: ", gain_naive, "time: ", t1-t0, " seconds."
+    print "dc:    ", gain_dc,    "time: ", t2-t1, " seconds."
+    print "lin:   ", gain_lin,   "time: ", t3-t2, " seconds."
+    print "i0:",i0,"j0:",j0
 
 test()
 
