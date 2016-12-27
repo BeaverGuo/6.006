@@ -69,7 +69,7 @@ def findCrossMax(A,lo,mid,hi):
 
 testB = [10, -2, 10, 5, -4, 14]
 
-print(maxSubSum(testB,0,6))
+print maxSubSum(testB,0,6)
 
 
 

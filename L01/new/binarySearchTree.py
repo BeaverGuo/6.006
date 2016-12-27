@@ -2,11 +2,16 @@
 #define a binary search tree class
 #The BinarySearchTree class has a reference to the TreeNode that is the root of the binary search tree.
 #binary search tree class create the real tree
+#why iterator:这样做有什么用呢？试想想在迭代指针还没指到的当前元素时候，已经迭代之后的位置元素，那些元素需要计算么？
+#因为只有迭代到当前位置的元素时候，才开始计算元素的值。在迭代之前可以不存在，在迭代之后可以被销毁。实现
+#的迭代器不需要准备所遍历的所有元素，没错，这就是迭代器的一大魅力，惰性计算。
+#iterator条件:实现了魔法方法 __iter__()，返回一个迭代对象，这个对象有一个next()方法，
+#实现 next() 方法，返回当前的元素，并指向下一个元素的位置，当前位置已经没有元素的时候，抛出StopIteration异常。
 
 class BinarySearchTree:
     def __init__(self):
-        self.root=None
-        self.size=0
+        self.root=None #树的根节点
+        self.size=0 #树的深度
     
     def length(self):
         return self.size
@@ -14,7 +19,7 @@ class BinarySearchTree:
     def __len__(self):
         return self.size
     
-    def __iter__(self):
+    def __iter__(self):#返回一个迭代器,这里返回了root的iterator
         return self.root.__iter__()
     
     def put(self,key,val):
@@ -23,14 +28,14 @@ class BinarySearchTree:
         else:
             self.root=TreeNode(key,val)#handle the case: do not have a root,create one
         self.size =self.size+1
-        
-    def _put(self,key,val,currentNode):
-        if key<currentNode.key:
+    #插入一个节点    
+    def _put(self,key,val,currentNode):#搜索从currentNode = root开始
+        if key<currentNode.key:#比较key的大小选择左右
             if currentNode.hasLeftChild():
                 self._put(key,val,currentNode.leftChild)#recursive call to search the tree
             else:
-                currentNode.leftChild=TreeNode(key,val,parent=currentNode)#parent是形参 设置默认值
-        else:
+                currentNode.leftChild=TreeNode(key,val,parent=currentNode)#插入到左边 parent是形参 设置默认值
+        else:#插入到右边
             if currentNode.hasRightChild():
                 self._put(key,val,currentNode.rightChild)
             else:
@@ -80,13 +85,13 @@ class BinarySearchTree:
                 self.size = self.size - 1
             else:
                 raise KeyError('Error,Key not in tree')
-        elif self.size == 1 and self.root.key == key:
+        elif self.size == 1 and self.root.key == key:#remove root node
             self.root = None
             self.size = self.size - 1
         else:
             raise KeyError('Error,Key not in tree')
     
-    def findSuccessor(self):
+    def findSuccessor(self):#???
         succ = None
         if self.hasRightChild():
             succ = self.rightChild.findMin()
@@ -112,7 +117,7 @@ class BinarySearchTree:
                 self.parent.leftChild = None
             else:
                 self.parent.rightChild = None
-        elif self.hasAnyChildren():
+        elif self.hasAnyChildren():#self有左右children,删除self时,把子节点接上为什么是左子节点优先?
             if self.hasLeftChild():
                 if self.isLeftChild():
                     self.parent.leftChild = self.leftChild
@@ -128,9 +133,10 @@ class BinarySearchTree:
                     self.rightChild.parent = self.parent
             
     
-    def remove(self,currentNode):
-        if currentNode.isLeaf():#leaf
-            if currentNode == currentNode.parent.leftChild:
+    def remove(self,currentNode):#remove currentNode in the tree
+        if currentNode.isLeaf():#leaf删除最简单,只需要管上一级
+            if currentNode == currentNode
+            .parent.leftChild:
                 currentNode.parent.leftChild = None
             else:
                 currentNode.parent.rightChild = None
@@ -220,23 +226,3 @@ mytree[2]="at"
 
 print(mytree[6])
 print(mytree[2])
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-

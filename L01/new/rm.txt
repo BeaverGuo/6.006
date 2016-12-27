@@ -4,3 +4,12 @@ problem-set 1-4 left for the next lesson.
 intro to alg:
 ch 1, 3 , 4.1
 
+Convoluted and obtuse descriptions might receive low
+marks, even when they are correct. Also, aim for concise solutions, as it will save you time spent
+on write-ups, and also help you conceptualize the key idea of the problem.
+
+O表示上界 O(f(n))得到的是比f(n)更小的,f(n)是上界?
+很多指数相乘的就取log再比较
+
+TODO:
+PART B

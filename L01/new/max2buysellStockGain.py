@@ -10,9 +10,9 @@ Created on Thu Jun 16 11:44:56 2016
 #主要还是要分成2部分 divide and conquer
 def max2buysellStockGain(A):
     n = len(A)
-    PMin=[None]*n
-    G = [None]*n
-    PBS = [None]*n
+    PMin=[None]*n #从0到n-1的某个i的最小值存储下来 这个用于快速计算i处single buy single sell最大利润G[i]
+    G = [None]*n #从0到n-1的某个i sell at i single buy single sell最大利润G[i] 
+    PBS = [None]*n #i及其之前single buy single sell最大利润
     PMin[0] = A[0]
     G[0] = 0
     PBS[0] = 0
@@ -46,7 +46,7 @@ def max2buysellStockGain(A):
 A = [13,4,5,6,17,8,9,10]
 print(max2buysellStockGain(A))
 
-#another solution similar to the algorithm before
+#another solution similar to the algorithm before 简单看成4步操作 4个loop解决了
  def max2buysellStockGain1(A):
      n = len(A)
      PMin=[None]*n
@@ -65,17 +65,4 @@ print(max2buysellStockGain(A))
      for i in range(1,n):
          maxGain = max(A[i]+PBSBMax[i],maxGain)
     return maxGain
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
+    

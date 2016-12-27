@@ -58,12 +58,12 @@ def getSubMatrix(A,mid):
     
     return (left,right,downLeft,downRight)
             
-#how to get the index of the matrix?
+#how to get the index of the matrix? num是需要寻找的元素
 def findInMatrix(A,startRow,startCol,matrixSize,num):#submatrix is defined by startRow startCol and matrixSize in A
         n = matrixSize
         (row,col) = (startRow,startCol)
         if n == 1:#handle base
-            if num == A[row][col]:
+            if num == A[row][col]:# OK. find it!
                 return (row,col,num)
             else:
                 return (None,None,None)
@@ -112,7 +112,7 @@ A = [[1,4,7,9],
 
 #print(getSubMatrix(A,2))
 #print(len(A))
-print(findInMatrix(A,0,0,4,13))            
+print findInMatrix(A,0,0,4,13)
     
     
     
