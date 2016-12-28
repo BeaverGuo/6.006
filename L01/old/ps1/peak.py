@@ -29,17 +29,17 @@ class PeakProblem(object):
     def get(self, location):
         """
         Returns the value of the array at the given location, offset by
-        the coordinates (startRow, startCol).取相对位置值,因为变成子问题后相应的problem的区域就变小了，取相对位置比较好
+        the coordinates (startRow, startCol).取相对位置值,解耦,模块化
 
         RUNTIME: O(1)
         """
 
         (r, c) = location
-        if not (0 <= r and r < self.numRow):
+        if not (0 <= r and r < self.numRow):#safety check
             return 0
         if not (0 <= c and c < self.numCol):
             return 0
-        return self.array[self.startRow + r][self.startCol + c]
+        return self.array[self.startRow + r][self.startCol + c]#应该每分一个subproblem,startRow和startCol都会变化
 
     def getBetterNeighbor(self, location, trace = None):
         """
@@ -51,7 +51,7 @@ class PeakProblem(object):
 
         (r, c) = location
         best = location
-        # get() method get the value of the dictionary
+        # get() method get the value of the dictionary 为了兼容第2个算法所以前后左右都比较
         if r - 1 >= 0 and self.get((r - 1, c)) > self.get(best):
             best = (r - 1, c)
         if c - 1 >= 0 and self.get((r, c - 1)) > self.get(best):
@@ -64,23 +64,21 @@ class PeakProblem(object):
         if not trace is None: trace.getBetterNeighbor(location, best)
 
         return best
-    
+    #get global max in locations
     def getMaximum(self, locations, trace = None):
         """
         Finds the location in the current problem with the greatest value.
 
         RUNTIME: O(len(locations))
 
-        what does trace mean?
         """
-        #get the location and the corresbonding value of self,self类似于js中的this指针?and Yes it is!
         (bestLoc, bestVal) = (None, 0)
     
         for loc in locations:
             if bestLoc is None or self.get(loc) > bestVal:
-                (bestLoc, bestVal) = (loc, self.get(loc))#loc是一个2维坐标
+                (bestLoc, bestVal) = (loc, self.get(loc))#loc是一个2维坐标 eg:(r0,c0)
     
-        if not trace is None: trace.getMaximum(locations, bestLoc)
+        if not trace is None: trace.getMaximum(locations, bestLoc)#trace用于html显示,存储算法中间步骤的结果
 
         return bestLoc
 
@@ -102,10 +100,10 @@ class PeakProblem(object):
         """
 
         (sRow, sCol, nRow, nCol) = bounds
-        newBounds = (self.startRow + sRow, self.startCol + sCol, nRow, nCol)#改变起始col or row
+        newBounds = (self.startRow + sRow, self.startCol + sCol, nRow, nCol)#改变起始col or row,随着subproblem变化
         return PeakProblem(self.array, newBounds)
 
-    def getSubproblemContaining(self, boundList, location):
+    def getSubproblemContaining(self, boundList, location):#从boundList选出包含location的subproblem array
         """
         Returns the subproblem containing the given location.  Picks the first
         of the subproblems in the list which satisfies that constraint, and
@@ -116,8 +114,8 @@ class PeakProblem(object):
 
         (row, col) = location
         for (sRow, sCol, nRow, nCol) in boundList:
-            if sRow <= row and row < sRow + nRow:#合法性检测
-                if sCol <= col and col < sCol + nCol:#判断neighbor属于哪个子问题区域，即左右
+            if sRow <= row and row < sRow + nRow: #safety check
+                if sCol <= col and col < sCol + nCol:
                     return self.getSubproblem((sRow, sCol, nRow, nCol))
 
         # shouldn't reach here

@@ -4,7 +4,8 @@ import trace
 ################################################################################
 ################################## Algorithms ##################################
 ################################################################################
-#这个是pdf中讲的算法，找到global max,然后再找大方向的neighbor
+#这个是pdf中讲的算法，找到某一列的global max,然后比较左右再找大方向的neighbor的global max, repeat
+#但是怎么证明其一定能找到2d peak?
 def algorithm1(problem, trace = None):
     # if it's empty, we're done handle exception
     if problem.numRow <= 0 or problem.numCol <= 0:
@@ -24,16 +25,16 @@ def algorithm1(problem, trace = None):
 
     # get a list of all locations in the dividing column
     # [0,numRow-1],[mid]
-    divider = crossProduct(range(problem.numRow), [mid])#获取mid那一列
+    divider = crossProduct(range(problem.numRow), [mid])#获取mid那一列索引 [(r0,c0),(r1,c1)...]
 
     # find the maximum in the dividing column
-    bestLoc = problem.getMaximum(divider, trace)# 获取mid那一列的最大值，global maximum
+    bestLoc = problem.getMaximum(divider, trace)# get global maximum
 
     # see if the maximum value we found on the dividing line has a better
     # neighbor (which cannot be on the dividing line, because we know that
     # this location is the best on the dividing line)
     neighbor = problem.getBetterNeighbor(bestLoc, trace)# 返回上下左右4个neighbor中的值更大的位置,
-    #这应该只要比较左右neighbor就可以了吧?，因为已经是那一列最大值了
+    #这应该只要比较左右neighbor就可以了吧?因为已经是那一列最大值了
 
     # this is a peak, so return it
     if neighbor == bestLoc:
@@ -46,9 +47,9 @@ def algorithm1(problem, trace = None):
     if not trace is None: trace.setProblemDimensions(sub)
     result = algorithm1(sub, trace)#recurse
     return problem.getLocationInSelf(sub, result)
-#ascent greedy alogrithm 这个算法是(0,0)开始搜索neighbor再找大方向递归找peak
+#greedy ascent alogrithm 这个算法是(0,0)开始搜索neighbor再找大方向递归找peak
 def algorithm2(problem, location = (0, 0), trace = None):
-    # if it's empty, we're done 
+    # if it's empty, we're done  safety check
     if problem.numRow <= 0 or problem.numCol <= 0:
         return None
     
@@ -72,12 +73,12 @@ def algorithm3(problem, bestSeen = None, trace = None):
 
     # first, get the list of all subproblems
     subproblems = []
-
+    #这个狠，分成4个子问题了
     (subStartR1, subNumR1) = (0, midRow)
     (subStartR2, subNumR2) = (midRow + 1, problem.numRow - (midRow + 1))
     (subStartC1, subNumC1) = (0, midCol)
     (subStartC2, subNumC2) = (midCol + 1, problem.numCol - (midCol + 1))
-    #这个狠，分成4个子问题了
+    
     subproblems.append((subStartR1, subStartC1, subNumR1, subNumC1))
     subproblems.append((subStartR1, subStartC2, subNumR1, subNumC2))
     subproblems.append((subStartR2, subStartC1, subNumR2, subNumC1))
@@ -86,7 +87,7 @@ def algorithm3(problem, bestSeen = None, trace = None):
     # find the best location on the cross (the middle row combined with the
     # middle column)
     cross = []
-    #中间行，中间列
+    #中间行，中间列的索引
     cross.extend(crossProduct([midRow], range(problem.numCol)))#extend merge list
     cross.extend(crossProduct(range(problem.numRow), [midCol]))
     #cross把中间行和列组成一个list
@@ -110,7 +111,7 @@ def algorithm3(problem, bestSeen = None, trace = None):
     if not trace is None: trace.setProblemDimensions(sub)
     result = algorithm3(sub, newBest, trace)
     return problem.getLocationInSelf(sub, result)
-#和算法1差不多，更加完善，分行列split两种情况  The algorithm alternates between splitting
+#更加完善,算法复杂度O(n),分行列split两种情况  The algorithm alternates between splitting
 def algorithm4(problem, bestSeen = None, rowSplit = True, trace = None):
     # if it's empty, we're done 
     if problem.numRow <= 0 or problem.numCol <= 0:

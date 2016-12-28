@@ -219,3 +219,8 @@ visualizer.html
 
 This code has been verified to work with Python 2.7.  It will not work with
 Python 3.x.
+
+focus
+(1-1)a,c
+(1-3,1-4,1-5)a,b,c,d
+alg 4 runtime
