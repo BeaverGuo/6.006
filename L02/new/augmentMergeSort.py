@@ -122,7 +122,7 @@ def augmentMergeSort(A):
     return (B,b)
 
 A=[4,2,6,3,9]
-print(augmentMergeSort(A))
+print augmentMergeSort(A)
 
 
 
