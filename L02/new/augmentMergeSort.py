@@ -83,7 +83,7 @@ def augmentMerge(A1,A2):
             retArray.append(A2[index_A2])
             index_A2 = index_A2 + 1
             #在A1项更大情况下更新奇偶位
-            retParityBit = (retParityBit + (l1-index_A1))%2
+            retParityBit = (retParityBit + (l1-index_A1))%2#core
         else :
             retArray.append(A1[index_A1])
             index_A1 = index_A1 + 1
@@ -102,7 +102,7 @@ def augmentMerge(A1,A2):
 #A1=[1,3]
 #A2=[2,4]
 
-#print(augmentMerge(A1,A2))
+#print augmentMerge(A1,A2)
 
 #真正的mergeSort O(nlogn)
 def augmentMergeSort(A):
@@ -124,23 +124,4 @@ def augmentMergeSort(A):
 A=[4,2,6,3,9]
 print augmentMergeSort(A)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           
+          

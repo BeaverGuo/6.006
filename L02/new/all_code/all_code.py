@@ -34,7 +34,7 @@ class Gradebook:
     def __init__(self, student_names, k):
         # Define and initialize your data structure!
         # make the
-         # Initate a list of student name
+        # Initate a list of student name
         gpa = [0] * len(student_names)
         n = len(student_names)
         # Check if n is odd or even:
@@ -42,18 +42,17 @@ class Gradebook:
             if k % 2 == 0:
                 upper = int(math.floor((n - k) / float(2)))#upper:高于中间k的人数
             else:
-                upper = int(math.floor((n - k) / float(2))) + 1  #n为偶数取上限 7 = 2 + 2 +3  (15/2 = 2
-
+                upper = int(math.floor((n - k) / float(2))) + 1  #n为偶数取上限 
         else:
-            upper = int(math.floor((n - k) / float(2)))  #n为奇数取下限? 7 = 2 + 2 +3  (15/2 = 2
-        lower = n - (upper + k)  #低于中间k的人数 =k3+5 = 8  = 2 10 - (2+4) = 3
-        values = [(0, 0, 0)] * len(student_names)
+            upper = int(math.floor((n - k) / float(2)))  #n为奇数取下限? 
+        lower = n - (upper + k)  #lower:低于中间k的人数
+        values = [(0, 0, 0)] * len(student_names)#3个值分别是?
         self.all_students_scores = dict(zip(student_names, values))#zip打包key:value对
-        self.lowerStudents = Max_Heap(student_names[:lower], gpa[:lower])#父节点大于子节点,子节点表示低于k-middle
+        self.lowerStudents = Max_Heap(student_names[:lower], gpa[:lower])# Max_Heap 父节点大于子节点,所以这个树是root最大，子节点越来越小,所以只要root低于k-middle即中间的最小值即可,key:name value:gpa
         # this is giving the two people.
         self.middleStudentNames = student_names[lower:k + lower]
         self.upperStudents = Min_Heap(
-            student_names[k + lower:n], gpa[k + lower:n])#父节点不大于子节点,子节点表示高于k-middle 
+            student_names[k + lower:n], gpa[k + lower:n])# Min_Heap 父节点<=子节点,所以root是最小,只要root高于 k-middle的最大值即可 
 
     def sort(self, index):
         curr_index = index
@@ -84,7 +83,7 @@ class Gradebook:
         # Updates student with the new credit and grade information, and
         # makes sure "middle()" still returns the k most average students
         # in O(k) time. Does not need to return anything.
-        # updates studnet iwth the new credit and grade informaiton.
+        # updates studnet with the new credit and grade information.
         # here, you want to simply update these ones.
         #print("at the beginning of update_grade")
       #  self.lowerStudents.show_tree()
@@ -105,7 +104,7 @@ class Gradebook:
         # Case I: If student is in the lower students - max heap.
         if student in self.lowerStudents.key_to_index:
             # Modify the student's GPA with the new GPA.
-            min_k = self.all_students_scores[self.middleStudentNames[0]][2]
+            min_k = self.all_students_scores[self.middleStudentNames[0]][2]#中间是按升序排列
             ##print("min_k is ")
             # print(min_k)
             self.lowerStudents.max_heap_modify(student, newGPA)
@@ -205,7 +204,7 @@ class Gradebook:
         #print("at the end of this iteration of update_grade")
         # self.lowerStudents.show_tree()
         # print(self.middle())
-      #  self.upperStudents.show_tree()
+        # self.upperStudents.show_tree()
 
         return
 
@@ -313,10 +312,10 @@ class Max_Heap:
         #assert self.check_heap_invariant()
         return
 
-    def maximum(self):
+    def maximum(self):#为啥第一个最大?
         return (self.keys[0], self.data[0])
 
-    def extract_max(self):
+    def extract_max(self):#?
         if len(self.keys) < 1:
             raise Exception("No elements in heap!")
         sm, gm = self.keys.popleft(), self.data.popleft()
@@ -335,18 +334,18 @@ class Max_Heap:
         self.key_to_index[k] = len(self.keys) - 1  # !
         self.increase_key(len(self.keys) - 1, d)
 
-    def max_heapify(self, i):#?没看懂,有点像找最大data,找到swap,然后再扩大2倍递归这样?不是，乘2是找子项，如果子项更大的话交换父子项，并再递归找子项
+    def max_heapify(self, i):#?没看懂,乘2是找子项，如果子项更大的话交换父子项，并再递归找子项
         heap_size = len(self.keys)
         l = i * 2 + 1
         r = i * 2 + 2
         largest = i
-        if l < heap_size and self.data[l] > self.data[i]:
+        if l < heap_size and self.data[l] > self.data[i]:#去掉首尾不比较,索引奇数1,3...与中间i比较大小,大的存下
             largest = l
-        if r < heap_size and self.data[r] > self.data[largest]:
+        if r < heap_size and self.data[r] > self.data[largest]:#偶数2,4...与最大比较，替换最大
             largest = r
         if largest != i:
             self.swap(largest, i)
-            self.max_heapify(largest)
+            self.max_heapify(largest)#这里没看懂,再从非中间的上一个最大值那再来一次?
 
     def increase_key(self, i, key):#往parent找,插入key到对应的位置
         if key < self.data[i]:#好的编码习惯
@@ -362,7 +361,7 @@ class Max_Heap:
             parent = (i - 1) / 2
 
     def heapify(self):
-        for i in range(len(self.keys) / 2)[::-1]:#取keys长度一半的索引反向遍历
+        for i in range(len(self.keys) / 2)[::-1]:#取keys first half index反向遍历
             self.max_heapify(i)
 
     def swap(self, i1, i2):
