@@ -24,7 +24,7 @@ class Problem(object):
         self.elements = set()
         while len(self.elements) < NUM_SAMPLES:
             self.elements.add(random.choice(DOMAIN))
-        self.elements = sorted(list(self.elements))
+        self.elements = sorted(list(self.elements))#list(a) change a to a list
         self.hide_all()
         self.query = random.choice(self.elements)
 
@@ -47,7 +47,7 @@ class Problem(object):
         table_html = "<table width='100%%' height='50px' style='table-layout: fixed'><tr>%s</tr></table>" % ("".join(els_html))
         return header_html + table_html
 
-#Glove vectors
+#Glove vectors --> solve many analogies
 
 class Glove(object):
     def __init__(self,path):
@@ -85,7 +85,7 @@ class Glove(object):
 
 
 
-#Implementation using binary search
+#Implementation 'find_vector' using binary search
 def find_vector(self, key, lo=None, hi=None, debug=False):
     # Make sure by default we search over entire table
     if lo is None:
